@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+build/
+dist/
+release/
+*.spec
+.venv/
+.DS_Store
+ffmpeg-tools/
+ffmpeg.zip
+windows-payload/

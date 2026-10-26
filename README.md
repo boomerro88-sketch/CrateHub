@@ -1,6 +1,6 @@
 # CrateHub
 
-Lokalny katalog do odkrywania muzyki: Explorer, Rhythm Roulette, Twoje skrzynki, gramofon, BPM i tonacja, WhoSampled i eksport MP3 z szumem winyla lub bez.
+Lokalny katalog do odkrywania muzyki: Poszukiwacz / Explorer, Rytmiczna ruletka / Rhythm Roulette, Twoje skrzynki / Your crates, gramofon, BPM i tonacja, WhoSampled i eksport MP3 z szumem winyla lub bez.
 
 ## Instalacja na macOS Apple Silicon
 
@@ -10,7 +10,11 @@ Pakiet jest podpisany lokalnie (ad hoc), bez certyfikatu Developer ID i notaryza
 
 ## Windows
 
-Repozytorium zawiera konfigurację GitHub Actions budującą instalator EXE na Windows x64. Po przesłaniu repozytorium otwórz Actions → Build Windows installer → Run workflow. Instalator znajdziesz w Artifacts zakończonego uruchomienia. To nie jest jeszcze przetestowane wydanie Windows — trzeba zbudować i sprawdzić je na Windows przed publikacją.
+Instalator EXE x64 zawiera Python 3.14.9, Node 22.23.4, FFmpeg i biblioteki aplikacji. Instaluje program w profilu użytkownika i tworzy skróty. Katalog otwiera się w przeglądarce; kliknięcie OK w oknie sterowania kończy aplikację. Instalator został zbudowany na macOS za pomocą NSIS; uruchomienie na Windows wymaga jeszcze weryfikacji. Repozytorium zawiera też alternatywny build PyInstaller w GitHub Actions.
+
+## Języki i skrzynki
+
+Przełącznik PL / EN znajduje się w prawym górnym rogu i zapamiętuje wybór. Każda skrzynka mieści maksymalnie 30 płyt. Starsze większe skrzynki są dzielone na kolejne bez utraty zapisanych pozycji.
 
 ## Dane i dotychczasowe skrzynki
 

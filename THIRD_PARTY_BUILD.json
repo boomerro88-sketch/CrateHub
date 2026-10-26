@@ -1,0 +1,765 @@
+[
+  {
+    "name": "ada-url",
+    "license": "Apache-2.0 OR MIT",
+    "versions": {
+      "stable": "4.0.0",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/ada-url/ada/archive/refs/tags/v4.0.0.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "6d6c7ef7dd2e329320d34eb2ab29ccdc879ee3935af9dfb894a6640e58dc381d"
+      },
+      "head": {
+        "url": "https://github.com/ada-url/ada.git",
+        "branch": "main",
+        "using": null
+      }
+    },
+    "dependencies": [
+      "fmt",
+      "simdutf"
+    ]
+  },
+  {
+    "name": "brotli",
+    "license": "MIT",
+    "versions": {
+      "stable": "1.2.1",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/google/brotli/archive/refs/tags/v1.2.1.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "98d35d11a78dc453aebb7d10c3748f3f73ff78c8267c0dc697b8631f67bf7e8f"
+      },
+      "head": {
+        "url": "https://github.com/google/brotli.git",
+        "branch": "master",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "c-ares",
+    "license": "MIT",
+    "versions": {
+      "stable": "1.34.9",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/c-ares/c-ares/releases/download/v1.34.9/c-ares-1.34.9.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "9364b70a12eb59a06830fb488d9357f90100dff0d98b23ea3593a183d43e6f2f"
+      },
+      "head": {
+        "url": "https://github.com/c-ares/c-ares.git",
+        "branch": "main",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "dav1d",
+    "license": "BSD-2-Clause",
+    "versions": {
+      "stable": "1.5.4",
+      "head": null,
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://code.videolan.org/videolan/dav1d/-/archive/1.5.4/dav1d-1.5.4.tar.bz2",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "2abfb0c89212e6e4733a54e0ae509ec00a5b845a6360946f918806e14aedb011"
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "ffmpeg",
+    "license": "GPL-3.0-or-later",
+    "versions": {
+      "stable": "9.0.2",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e"
+      },
+      "head": {
+        "url": "https://github.com/FFmpeg/FFmpeg.git",
+        "branch": "master",
+        "using": null
+      }
+    },
+    "dependencies": [
+      "dav1d",
+      "lame",
+      "libvmaf",
+      "libvpx",
+      "openssl@4",
+      "opus",
+      "sdl2-compat",
+      "svt-av1",
+      "x264",
+      "x265",
+      "xz"
+    ]
+  },
+  {
+    "name": "fmt",
+    "license": "MIT",
+    "versions": {
+      "stable": "12.2.0",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/fmtlib/fmt/releases/download/12.2.0/fmt-12.2.0.zip",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "a2f4a8d51178f954e4c339007f77edd76ba0cb2e36f87a48e5a5403d9be5878f"
+      },
+      "head": {
+        "url": "https://github.com/fmtlib/fmt.git",
+        "branch": "main",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "hdrhistogram_c",
+    "license": "CC0-1.0 OR BSD-2-Clause",
+    "versions": {
+      "stable": "0.12.1",
+      "head": null,
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/HdrHistogram/HdrHistogram_c/archive/refs/tags/0.12.1.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "b2cff564b49f900e7f951c95428100a4aed36561703237ffc5e41b4843d804ce"
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "lame",
+    "license": "LGPL-2.0-or-later",
+    "versions": {
+      "stable": "4.0",
+      "head": null,
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://downloads.sourceforge.net/project/lame/lame/4.0/lame-4.0.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "3df5124d5ad3a98312ffd7ba6a9b36230e4f8a3e66d3ce0f425e336c32d216eb"
+      }
+    },
+    "dependencies": [
+      "mpg123"
+    ]
+  },
+  {
+    "name": "libffi",
+    "license": "MIT",
+    "versions": {
+      "stable": "3.8.0",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/libffi/libffi/releases/download/v3.8.0/libffi-3.8.0.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "7da3e2d9a171eb0a038f592ecad3ff2bb2550f3496d87b3b29ad0cf4430c0db4"
+      },
+      "head": {
+        "url": "https://github.com/libffi/libffi.git",
+        "branch": "master",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "libnghttp2",
+    "license": "MIT",
+    "versions": {
+      "stable": "1.70.0",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/nghttp2/nghttp2/releases/download/v1.70.0/nghttp2-1.70.0.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "aa317e2cf9dca6afa0aed68f8fad6ff303ec6982e25a78c75c0b65e2b9b3ded5"
+      },
+      "head": {
+        "url": "https://github.com/nghttp2/nghttp2.git",
+        "branch": "master",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "libuv",
+    "license": "MIT",
+    "versions": {
+      "stable": "1.53.0",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://dist.libuv.org/dist/v1.53.0/libuv-v1.53.0.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "cb0d6dd2128d5a95bd242c6cc982a24fe608fa93da57b6b4ec763b0018c53e64"
+      },
+      "head": {
+        "url": "https://github.com/libuv/libuv.git",
+        "branch": "v1.x",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "libvmaf",
+    "license": "BSD-2-Clause-Patent",
+    "versions": {
+      "stable": "3.2.1",
+      "head": null,
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/Netflix/vmaf/archive/refs/tags/v3.2.1.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "5df7386911bc15fd1ca783132528748d219768ae4fc5f8e0b61184f041648092"
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "libvpx",
+    "license": "BSD-3-Clause",
+    "versions": {
+      "stable": "1.17.0",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/webmproject/libvpx/archive/refs/tags/v1.17.0.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "1020f184046187baa2985dbde38e0691f49c44088bca7a1842b0236c6081dc0a"
+      },
+      "head": {
+        "url": "https://chromium.googlesource.com/webm/libvpx.git",
+        "branch": "main",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "llhttp",
+    "license": "MIT",
+    "versions": {
+      "stable": "9.4.3",
+      "head": null,
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/nodejs/llhttp/archive/refs/tags/release/v9.4.3.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "1eb813c7437b31a87496a1cd3ed79f00746720f5e7e29c79b42c02cb69f36c39"
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "lz4",
+    "license": "BSD-2-Clause",
+    "versions": {
+      "stable": "1.10.0",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/lz4/lz4/archive/refs/tags/v1.10.0.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b"
+      },
+      "head": {
+        "url": "https://github.com/lz4/lz4.git",
+        "branch": "dev",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "merve",
+    "license": "Apache-2.0",
+    "versions": {
+      "stable": "1.2.2",
+      "head": null,
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/nodejs/merve/archive/refs/tags/v1.2.2.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "8f19c2132447b9113545ffd399cb2bc1e61c6166743921b04883f8e1d778d69e"
+      }
+    },
+    "dependencies": [
+      "simdutf"
+    ]
+  },
+  {
+    "name": "mpg123",
+    "license": "LGPL-2.1-only",
+    "versions": {
+      "stable": "1.33.7",
+      "head": null,
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://www.mpg123.de/download/mpg123-1.33.7.tar.bz2",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "31d0e35a4ca567ec9b5ebda6c3062bb4435d6d3eacd6ef0d95cadd7854dc03ee"
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "nbytes",
+    "license": "MIT",
+    "versions": {
+      "stable": "0.1.4",
+      "head": null,
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/nodejs/nbytes/archive/refs/tags/v0.1.4.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "67f4b8363f12abb64c07a0cecf2bf2dce7ab47b5f8b9fd2efdb852ea254c2d40"
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "node",
+    "license": "MIT",
+    "versions": {
+      "stable": "26.12.1",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://nodejs.org/dist/v26.12.1/node-v26.12.1.tar.xz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "053e3b296859b6d8d93f99ef97fa9cec1c4ee171c72968100c649978c1dbd38c"
+      },
+      "head": {
+        "url": "https://github.com/nodejs/node.git",
+        "branch": "main",
+        "using": null
+      }
+    },
+    "dependencies": [
+      "abseil",
+      "ada-url",
+      "brotli",
+      "c-ares",
+      "hdrhistogram_c",
+      "icu4c@79",
+      "libffi",
+      "libnghttp2",
+      "libuv",
+      "llhttp",
+      "merve",
+      "nbytes",
+      "openssl@4",
+      "simdjson",
+      "simdutf",
+      "sqlite",
+      "uvwasi",
+      "zstd",
+      "highway"
+    ]
+  },
+  {
+    "name": "opus",
+    "license": "BSD-3-Clause",
+    "versions": {
+      "stable": "1.6.1",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://ftp.osuosl.org/pub/xiph/releases/opus/opus-1.6.1.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1"
+      },
+      "head": {
+        "url": "https://gitlab.xiph.org/xiph/opus.git",
+        "branch": "main",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "readline",
+    "license": "GPL-3.0-or-later",
+    "versions": {
+      "stable": "8.3.6",
+      "head": null,
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://ftpmirror.gnu.org/readline/readline-8.3.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "fe5383204467828cd495ee8d1d3c037a7eba1389c22bc6a041f627976f9061cc"
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "sdl2-compat",
+    "license": "Zlib",
+    "versions": {
+      "stable": "2.32.74",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/libsdl-org/sdl2-compat/releases/download/release-2.32.74/sdl2-compat-2.32.74.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "ec68abde77e2e459c8abc4f9587b8976b5d2a657b2bfda2fb3a079b0f8924588"
+      },
+      "head": {
+        "url": "https://github.com/libsdl-org/sdl2-compat.git",
+        "branch": "main",
+        "using": null
+      }
+    },
+    "dependencies": [
+      "sdl3"
+    ]
+  },
+  {
+    "name": "sdl3",
+    "license": "Zlib",
+    "versions": {
+      "stable": "3.4.18",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/libsdl-org/SDL/releases/download/release-3.4.18/SDL3-3.4.18.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "9c75cf16330322c217dedd2e0609f1124f1b54b8633e763467b4684d0f4334a3"
+      },
+      "head": {
+        "url": "https://github.com/libsdl-org/SDL.git",
+        "branch": "main",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "simdjson",
+    "license": "Apache-2.0",
+    "versions": {
+      "stable": "5.0.5",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/simdjson/simdjson/archive/refs/tags/v5.0.5.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "50bb17769e1054ff1bfcd5dbbfcf33544c77f6ebdb31a318436ea0e47f78f571"
+      },
+      "head": {
+        "url": "https://github.com/simdjson/simdjson.git",
+        "branch": "master",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "simdutf",
+    "license": "Apache-2.0 OR MIT",
+    "versions": {
+      "stable": "9.3.2",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/simdutf/simdutf/archive/refs/tags/v9.3.2.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "d92a0a4ce216dcebf18af20fed7ea7279fa535683f790fdaeed39827a234f567"
+      },
+      "head": {
+        "url": "https://github.com/simdutf/simdutf.git",
+        "branch": "master",
+        "using": null
+      }
+    },
+    "dependencies": [
+      "icu4c@79"
+    ]
+  },
+  {
+    "name": "sqlite",
+    "license": "blessing",
+    "versions": {
+      "stable": "3.54.1",
+      "head": null,
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://www.sqlite.org/2026/sqlite-autoconf-3540100.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "926ef8d3eab93fbf6e06011901273eec076b25594a4e1cdadd50c987f4f6d64e"
+      }
+    },
+    "dependencies": [
+      "readline"
+    ]
+  },
+  {
+    "name": "svt-av1",
+    "license": "BSD-3-Clause",
+    "versions": {
+      "stable": "4.2.0",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v4.2.0/SVT-AV1-v4.2.0.tar.bz2",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "512f2ea5649e3e76c2dddcc25c2556fb67a9582baaab207c9c96161c94659dad"
+      },
+      "head": {
+        "url": "https://gitlab.com/AOMediaCodec/SVT-AV1.git",
+        "branch": "master",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "uvwasi",
+    "license": "MIT",
+    "versions": {
+      "stable": "0.0.23",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/nodejs/uvwasi/archive/refs/tags/v0.0.23.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "cdb148aac298883b51da887657deca910c7c02f35435e24f125cef536fe8d5e1"
+      },
+      "head": {
+        "url": "https://github.com/nodejs/uvwasi.git",
+        "branch": "main",
+        "using": null
+      }
+    },
+    "dependencies": [
+      "libuv"
+    ]
+  },
+  {
+    "name": "x264",
+    "license": "GPL-2.0-or-later",
+    "versions": {
+      "stable": "r3222",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://code.videolan.org/videolan/x264.git",
+        "tag": null,
+        "revision": "b35605ace3ddf7c1a5d67a2eb553f034aef41d55",
+        "using": null,
+        "checksum": null
+      },
+      "head": {
+        "url": "https://code.videolan.org/videolan/x264.git",
+        "branch": "master",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "x265",
+    "license": "GPL-2.0-or-later",
+    "versions": {
+      "stable": "4.3",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/Multicorewareinc/x265/releases/download/4.3/x265_4.3.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "83c53e4c8bbb8f1e33ed59e10a7d621d1d7801ca853910c3eb41f038b8ffb121"
+      },
+      "head": {
+        "url": "https://github.com/Multicorewareinc/x265.git",
+        "branch": "master",
+        "using": null
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "xz",
+    "license": "0BSD AND GPL-2.0-or-later",
+    "versions": {
+      "stable": "5.8.4",
+      "head": null,
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/tukaani-project/xz/releases/download/v5.8.4/xz-5.8.4.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "0014c7886930454fe8bd4228665b51af55eeae560ea135c9c4cd33f55b2591d9"
+      }
+    },
+    "dependencies": []
+  },
+  {
+    "name": "zstd",
+    "license": "(BSD-3-Clause OR GPL-2.0-only) AND BSD-2-Clause AND MIT",
+    "versions": {
+      "stable": "1.5.7",
+      "head": "HEAD",
+      "bottle": true
+    },
+    "urls": {
+      "stable": {
+        "url": "https://github.com/facebook/zstd/archive/refs/tags/v1.5.7.tar.gz",
+        "tag": null,
+        "revision": null,
+        "using": null,
+        "checksum": "37d7284556b20954e56e1ca85b80226768902e2edabd3b649e9e72c0c9012ee3"
+      },
+      "head": {
+        "url": "https://github.com/facebook/zstd.git",
+        "branch": "dev",
+        "using": null
+      }
+    },
+    "dependencies": [
+      "lz4",
+      "xz"
+    ]
+  }
+]
