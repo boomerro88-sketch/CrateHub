@@ -14,7 +14,19 @@
  const canonical=r=>(r.artist+' '+r.title).normalize('NFKD').toLowerCase().replace(/ł/g,'l').replace(/\p{M}/gu,'').replace(/[^\p{L}\p{N}]/gu,'');
  function rows(){return window.CrateRows||[];}
  function matches(r,v=view){if(tagFilter&&!(state.tags[r.id]||[]).some(t=>t.toLocaleLowerCase('pl')===tagFilter))return false;if(v==='fav')return state.fav.includes(r.id);if(v==='heard')return state.heard.includes(r.id);if(v==='skip')return state.skip.includes(r.id);if(v==='unheard')return !state.heard.includes(r.id)&&!state.skip.includes(r.id);if(v==='safe')return !state.skip.includes(r.id);if(v==='duplicates')return (duplicateCounts.get(canonical(r))||0)>1;if(v.startsWith('crate:'))return (state.crates[v.slice(6)]||[]).includes(r.id);return true;}
- window.CrateProducer={matches};
+ window.CrateProducer={matches,
+  listCrates:()=>Object.entries(state.crates).map(([name,ids])=>({name,count:ids.length,ids:[...ids]})),
+  addToCrate:(id,name)=>{
+   name=typeof name==='string'?name.trim().slice(0,60):'';
+   if(!valid(id)||!rows().some(r=>r.id===id)||!name)return {ok:false,reason:'invalid'};
+   const ids=state.crates[name]||[];
+   if(ids.includes(id))return {ok:true,already:true};
+   if(ids.length>=CAPACITY)return {ok:false,reason:'full'};
+   const next=clean(state);next.crates[name]=[...ids,id];
+   try{localStorage.setItem(KEY,JSON.stringify(next));}catch(_){return {ok:false,reason:'storage'};}
+   state=next;activeCrate=name;document.dispatchEvent(new CustomEvent('crate:state'));return {ok:true};
+  }
+ };
  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(_){if(notice)notice.textContent='Przeglądarka nie zapisała danych. Wyeksportuj kopię.';}document.dispatchEvent(new CustomEvent('crate:state'));}
  function toggle(list,id){const i=list.indexOf(id);i<0?list.push(id):list.splice(i,1);}
  function refreshOptions(){const choices=[['all','Wszystkie utwory'],['safe','Bez odrzuconych'],['fav','Ulubione'],['unheard','Nieodsłuchane (bez odrzuconych)'],['heard','Odsłuchane'],['skip','Odrzucone'],['duplicates','Możliwe duplikaty'],...Object.keys(state.crates).map(n=>['crate:'+n,'Skrzynka: '+n])];selector.replaceChildren();for(const [v,t] of choices)selector.add(new Option(`${t} (${rows().filter(r=>matches(r,v)).length.toLocaleString('pl-PL')})`,v));if(!choices.some(([v])=>v===view))view='all';selector.value=view;const tags=new Map();for(const list of Object.values(state.tags))for(const tag of list)tags.set(tag.toLocaleLowerCase('pl'),tag);tagSelect.replaceChildren(new Option('Wszystkie moje tagi',''));[...tags].sort((a,b)=>a[1].localeCompare(b[1],'pl')).forEach(([key,name])=>tagSelect.add(new Option(name,key)));if(tagFilter&&!tags.has(tagFilter))tagSelect.add(new Option(tagFilter+' (0)',tagFilter));tagSelect.value=tagFilter;}

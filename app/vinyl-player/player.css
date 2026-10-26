@@ -45,3 +45,5 @@
  .sleeve-area{display:block;width:83%;margin-inline:auto}
  .sleeve-area .track{padding-top:22px}
 }
+
+.roulette-crate-save{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:18px 0;border-bottom:1px solid #555;margin-bottom:18px}.roulette-crate-save label{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.roulette-crate-save select,.roulette-crate-save input{max-width:100%;padding:10px;background:#171717;color:#fff;border:1px solid #777}.roulette-crate-save p{flex-basis:100%;margin:0;font-size:14px}
