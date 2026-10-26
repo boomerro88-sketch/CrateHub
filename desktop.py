@@ -7,7 +7,7 @@ os.environ['PATH']=str(BUNDLE/'bin')+os.pathsep+os.environ.get('PATH','')
 if len(sys.argv)>1 and sys.argv[1]=='--yt-dlp':
  import yt_dlp
  yt_dlp.main(sys.argv[2:]);sys.exit(0)
-VERSION='1.1.0'
+VERSION='1.1.1'
 os.environ.setdefault('SSL_CERT_FILE',__import__('certifi').where())
 def data_root():
  if os.environ.get('CRATE_DESKTOP_DATA'):return Path(os.environ['CRATE_DESKTOP_DATA'])
@@ -41,12 +41,16 @@ def main():
  if sys.stderr is None:sys.stderr=log
  import server_v2
  from http.server import ThreadingHTTPServer
+ native_status={'window_loaded':False}
  class DesktopHandler(server_v2.Handler):
   def do_GET(self):
-   if self.path=='/desktop-health' and self.valid_host():return self.answer({'app':'cratehub','version':VERSION})
+   if self.path=='/desktop-health' and self.valid_host():return self.answer({'app':'cratehub','version':VERSION,**native_status})
    return super().do_GET()
  if opts.self_test:
-  import subprocess,yt_dlp
+  import subprocess,yt_dlp,webview
+  if sys.platform=='win32':
+   import clr
+   clr.AddReference('System.Windows.Forms')
   for command in ['ffmpeg','node']:
    binary=shutil.which(command)
    assert binary,command+' missing'
@@ -68,6 +72,8 @@ def main():
  webview.settings['ALLOW_FILE_URLS']=False
  webview.settings['OPEN_EXTERNAL_LINKS_IN_BROWSER']=True
  window=webview.create_window('CrateHub',url,width=1380,height=900,min_size=(780,600),background_color='#E59000',text_select=True)
+ def loaded():native_status['window_loaded']=True
+ window.events.loaded+=loaded
  threading.Thread(target=server.serve_forever,daemon=True).start()
  try:
   webview.start(gui='edgechromium' if sys.platform=='win32' else None,private_mode=False,storage_path=str(root/'window-profile'),localization={'global.quitConfirmation':'Zamknąć CrateHub?','global.ok':'OK','global.cancel':'Anuluj','global.saveFile':'Zapisz plik','global.openFile':'Otwórz plik'})
