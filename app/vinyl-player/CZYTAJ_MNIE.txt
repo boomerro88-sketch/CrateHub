@@ -1,0 +1,16 @@
+CrateHub — osobny prototyp gramofonu
+Otwórz http://localhost:8768/ po uruchomieniu server.py.
+Serwer katalogu soul_crate_server.py musi działać na porcie 8766,
+aby przycisk AUDIO VINYL mógł przygotować oryginalny dźwięk.
+Zwykłe odtwarzanie YouTube nie wymaga pobierania audio.
+
+Przełącznik 33/45 i pitch ±8% zawsze zmieniają prędkość animacji.
+Aby zmieniać także tempo i wysokość dźwięku, wybierz AUDIO VINYL / PITCH.
+Prędkość bazowa pliku to 33⅓ RPM. 45 RPM daje współczynnik 1,35.
+Powrót pitchu do zera: podwójne kliknięcie suwaka.
+Animacja ramienia opiera się na faktycznym postępie odtwarzania.
+Błędy osadzania lub pobrania filmu są ograniczeniami konkretnego źródła.
+
+Referencje: zdjęcia Technics SL-1200MK2 i instrukcja producenta:
+https://help.na.panasonic.com/wp-content/uploads/2023/02/SL1200MK2_SFNU122M06_ENG.pdf
+To ilustracyjny prototyp interaktywny, bez afiliacji z Technics.

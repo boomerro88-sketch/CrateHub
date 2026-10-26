@@ -1,0 +1,10 @@
+Warstwy gramofonu, wersja 2
+
+chassis-static-v2.jpg — Nano Banana 2.1 w Google Flow. Nieruchoma obudowa bez talerza, ramienia, uchwytu pitch i nakładek przycisków.
+platter-vinyl.jpg — osobna obracająca się warstwa.
+tonearm-alpha.png — tło usunięte w narzędziu imagegen. Kryjący metal, prawdziwy kanał alpha wokół ramienia; najwyższa warstwa, bez multiply.
+Pitch, 33/45 i START — rzeczywiste kontrolki HTML nad obudową.
+
+Prompt ekstrakcji ramienia: Remove only the white/light grey background completely to genuine transparent alpha. Preserve this exact photographic silver turntable tonearm, opaque metal, counterweight, pivot assembly, S shaped tube, black headshell cartridge and tiny stylus. Preserve original composition, positioning, scale, silhouette and perspective. No cast shadow or white halo. Interior gaps transparent. All metal surfaces opaque including bright highlights.
+
+Audio: playbackRate = (RPM / 33.3333333333) * (1 + pitch / 100). preservesPitch oraz prefiksy ustawione na false. Regulacja pitch lub RPM automatycznie przygotowuje źródło audio z serwera lokalnego. Przy niedostępności audio wyświetlany jest błąd; YouTube pozostaje w standardowej prędkości.

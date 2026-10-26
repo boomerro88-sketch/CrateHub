@@ -11,3 +11,8 @@
 - Font Sharpie Hand: app/fonts/SOURCE.txt identyfikuje pochodzenie; nie potwierdzono uprawnień do publicznej redystrybucji.
 
 Dostarczane lokalne wydanie jest wersją testową. Zestaw informacji nie zastępuje kompletnego audytu licencji dla publicznego wydania. Źródła aplikacji są dostarczane osobno w paczce źródłowej.
+
+- pywebview 6.2.1: BSD-3-Clause, https://github.com/r0x0r/pywebview
+- PyObjC: MIT, https://github.com/ronaldoussoren/pyobjc
+- Bottle: MIT, https://github.com/bottlepy/bottle
+- Cocoa / WKWebView: komponenty systemowe macOS, niedystrybuowane osobno.

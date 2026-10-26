@@ -1,0 +1,5 @@
+BPM i tonacja: istniejący silnik Essentia.js, analiza czystego oryginału. Wyniki automatyczne, niezweryfikowane.
+WhoSampled: /uses z serwera katalogu 8766, archiwum z 2019, link do bieżących danych.
+MP3 bez szumu: oryginalny plik z katalogu. MP3 z trzaskami: 2 s intro i opcjonalny szum przez całość, głośność z suwaka; bez stosowania pitch.
+Wymagania: serwer katalogu na 8766, yt-dlp, FFmpeg.
+Uruchom server.py (domyślnie 8768) lub server.py 8870. Bieżący podgląd z nowymi endpointami: http://localhost:8870/ — stary proces 8768 wymaga restartu, aby obsłużyć nowe endpointy.

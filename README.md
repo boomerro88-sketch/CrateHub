@@ -1,33 +1,34 @@
-# CrateHub
+# CrateHub 1.1 — aplikacja desktopowa
 
-Lokalny katalog do odkrywania muzyki: Poszukiwacz / Explorer, Rytmiczna ruletka / Rhythm Roulette, Twoje skrzynki / Your crates, gramofon, BPM i tonacja, WhoSampled i eksport MP3 z szumem winyla lub bez.
+**[Pobierz aplikację na macOS Apple Silicon](https://github.com/boomerro88-sketch/CrateHub/releases/tag/v1.1.0)** — instalator DMG, komplet źródeł i sumy kontrolne.
 
-## Instalacja na macOS Apple Silicon
+CrateHub otwiera katalog i gramofon we własnym oknie aplikacji. Nie uruchamia przeglądarki ani terminala. Linki do zewnętrznych stron (np. „Otwórz YouTube”) mogą otwierać domyślną przeglądarkę.
 
-Otwórz obraz DMG i przeciągnij CrateHub do folderu Applications. Uruchom CrateHub. Program otwiera katalog w domyślnej przeglądarce i wyświetla małe okno sterowania. Zamknięcie tego okna zatrzymuje serwer. Nie instalujesz osobno Python, FFmpeg ani Node.
+## Instalacja na Macu z Apple Silicon (M1/M2/M3/M4/M5)
 
-Pakiet jest podpisany lokalnie (ad hoc), bez certyfikatu Developer ID i notaryzacji Apple. macOS może wymagać zatwierdzenia aplikacji w ustawieniach Prywatność i ochrona. Nie wyłączaj globalnych zabezpieczeń systemu. Wydanie Intel wymaga osobnego buildu na Macu Intel.
+1. Otwórz `CrateHub-1.1.0-macOS-Apple-Silicon.dmg`.
+2. Przeciągnij CrateHub do folderu Applications / Aplikacje.
+3. Uruchom CrateHub z Aplikacji lub Launchpada.
+4. Zamknięcie okna kończy program i jego lokalny serwis.
+
+Nie instalujesz osobno Pythona, Node ani FFmpeg. W pakiecie są wymagane narzędzia. Program korzysta z systemowego WKWebView. Połączenie z internetem jest potrzebne do YouTube, importu playlist i pobierania audio.
+
+Pakiet jest podpisany lokalnie (ad hoc), bez notaryzacji Apple i certyfikatu Developer ID. macOS może wymagać zatwierdzenia aplikacji w ustawieniach Prywatność i ochrona. Nie wyłączaj zabezpieczeń całego systemu. To wydanie jest dla procesorów Apple Silicon; nie dla Maców Intel.
+
+## Przeniesienie dotychczasowych skrzynek
+
+Aplikacja ma własny profil danych. W dotychczasowej stronie wybierz **Rozpakuj skrzynkę** (eksport JSON). W programie wybierz **Zapakuj skrzynkę** i wskaż zapisany JSON. Nazwy, utwory i tagi zostaną scalone. Zapis w programie pozostaje po ponownym uruchomieniu.
+
+Dane: `~/Library/Application Support/CrateHub`. Usunięcie samej aplikacji nie usuwa tych danych. Analiza BPM i tonacji jest szacunkiem automatycznym, odrębnym od danych źródłowych. Dostępność osadzania i audio zależy od YouTube.
 
 ## Windows
 
-Instalator EXE x64 zawiera Python 3.14.9, Node 22.23.4, FFmpeg i biblioteki aplikacji. Instaluje program w profilu użytkownika i tworzy skróty. Katalog otwiera się w przeglądarce; kliknięcie OK w oknie sterowania kończy aplikację. Instalator został zbudowany na macOS za pomocą NSIS; uruchomienie na Windows wymaga jeszcze weryfikacji. Repozytorium zawiera też alternatywny build PyInstaller w GitHub Actions.
+Źródła zawierają konfigurację budowania natywnego okna dla Windows x64 przez pywebview / Edge WebView2. Nowe wydanie 1.1 wymaga osobnego buildu i testów na Windows. Starszy instalator 1.0.1 otwierał przeglądarkę i nie jest odpowiednikiem tej wersji.
 
-## Języki i skrzynki
+## Budowanie
 
-Przełącznik PL / EN znajduje się w prawym górnym rogu i zapamiętuje wybór. Każda skrzynka mieści maksymalnie 30 płyt. Starsze większe skrzynki są dzielone na kolejne bez utraty zapisanych pozycji.
+Na docelowym systemie zainstaluj Python 3.12, FFmpeg i Node 22+, następnie `pip install -r requirements-build.txt` i `python packaging/build.py`. Windows wymaga WebView2 Runtime. Na Macu pakiet dołącza Python i zależności, a WKWebView dostarcza system.
 
-## Dane i dotychczasowe skrzynki
+Diagnostyka: `CrateHub --self-test`; serwis bez interfejsu: `CrateHub --headless`. `CRATE_DESKTOP_DATA` pozwala wskazać osobny katalog danych do testów. Stały lokalny port: 8890, dostęp wyłącznie z tego komputera.
 
-Serwer działa wyłącznie lokalnie na `http://localhost:8890`. Dane katalogu: macOS `~/Library/Application Support/CrateHub`; Windows `%LOCALAPPDATA%\CrateHub`. Importowane utwory pozostają po ponownej instalacji. Skrzynki i tagi nadal zapisuje przeglądarka w localStorage i nie są automatycznie synchronizowane pomiędzy przeglądarkami/portami. Przed przejściem z wersji localhost:8880 wyeksportuj skrzynki jej dotychczasową funkcją, a następnie zaimportuj je w aplikacji. Odinstalowanie programu nie usuwa danych użytkownika.
-
-## Funkcjonalność i dostęp do sieci
-
-Katalog i zapisane metadane są lokalne. YouTube, import playlist i pobieranie audio wymagają internetu i dostępności materiału. Zachowano funkcje pobierania: czyste MP3, intro 2 s i szum przez cały utwór. Analiza BPM/tonacji działa na audio oryginału w przeglądarce. Nie ma gwarancji dostępności każdego filmu ani pobierania — YouTube może zmieniać mechanizmy dostępu. Aktualizacje narzędzia yt-dlp dostarczamy w kolejnych wydaniach programu.
-
-## Budowanie ze źródeł
-
-Python 3.12, Node 22 lub nowszy i FFmpeg muszą być dostępne na komputerze budującym. `pip install -r requirements-build.txt`, następnie `python packaging/build.py`. PyInstaller dołącza interpreter, zależności, FFmpeg i Node. Buduj oddzielnie na każdym docelowym systemie i architekturze. Tryb diagnostyczny: executable `--self-test`; serwer bez okna: `--headless`. `CRATE_DESKTOP_DATA` pozwala ustawić osobny katalog testowy.
-
-## Dystrybucja i licencje
-
-Zobacz THIRD_PARTY.md i dołączone licencje. Repozytorium nie zawiera plików muzycznych z YouTube; jedynie metadane i identyfikatory. Dołączona próbka trzasków ma licencję CC0. Essentia.js jest objęta AGPL-3.0; przed publiczną dystrybucją należy określić zgodną licencję kodu aplikacji i udostępnić wymagane źródła. Prawa do zewnętrznego fontu i materiałów graficznych trzeba potwierdzić przed publiczną publikacją. Nie przypisano automatycznie licencji do kodu właściciela.
+Informacje o zależnościach: THIRD_PARTY.md i dołączone licencje. Źródła znajdują się w osobnej paczce obok instalatora.
