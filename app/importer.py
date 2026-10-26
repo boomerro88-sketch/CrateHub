@@ -48,7 +48,7 @@ def import_urls(urls,progress=None):
     else:report['rejected']+=1;source['rejected'].append({'id':e.get('id'),'title':e.get('title'),'reason':reason})
   except Exception as e:report['errors'].append({'url':url,'error':str(e)[:500]})
  with LOCK:
-  path=ROOT/'catalog-data.json';rows=json.loads(path.read_text());ids={r['id'] for r in rows};keys={key(r['artist'],r['title']) for r in rows}
+  path=ROOT/'catalog-data.json';rows=json.loads(path.read_text(encoding='utf-8'));ids={r['id'] for r in rows};keys={key(r['artist'],r['title']) for r in rows}
   for r in collected:
    if r['id'] in ids:report['existing']+=1;continue
    k=key(r['artist'],r['title'])
@@ -56,16 +56,16 @@ def import_urls(urls,progress=None):
    r['number']=len(rows)+1;rows.append(r);ids.add(r['id']);keys.add(k);report['added']+=1
   for i,r in enumerate(rows):
    r['number']=i+1;r.setdefault('imported_at',None);r.setdefault('raw_title',r['title']);r.setdefault('channel','');r.setdefault('playlist_url','')
-  temp=path.with_suffix('.json.tmp');temp.write_text(json.dumps(rows,ensure_ascii=False));os.replace(temp,path)
+  temp=path.with_suffix('.json.tmp');temp.write_text(json.dumps(rows,ensure_ascii=False), encoding='utf-8');os.replace(temp,path)
   # Keep the existing no-JS fallback and append new imported cards.
   import html
-  page=ROOT/'crate_e_digger.html';markup=page.read_text();present=set(re.findall(r'youtube.com/watch\?v=([\w-]{11})',markup));cards=[]
+  page=ROOT/'crate_e_digger.html';markup=page.read_text(encoding='utf-8');present=set(re.findall(r'youtube.com/watch\?v=([\w-]{11})',markup));cards=[]
   for r in rows:
    if r['id'] not in present:cards.append('<article class="static-item"><span>#'+str(r['number'])+'</span><h2>'+html.escape(r['artist']+' — '+r['title'])+'</h2><p>Brak danych o roku, BPM i tonacji</p><a href="https://www.youtube.com/watch?v='+r['id']+'">Oryginał YouTube</a> · <a href="'+html.escape(r.get('whosampled_url',''),quote=True)+'">WhoSampled</a></article>')
   markup=markup.replace('</section><section class="panel" id="o-danych"',''.join(cards)+'</section><section class="panel" id="o-danych"')
   count=f'{len(rows):,}'.replace(',',' ');markup=re.sub(r'<title>CrateHub — .*?</title>','<title>CrateHub — '+count+' utworów</title>',markup);markup=re.sub(r'Pełna lista: [\d ]+ utwor(?:ów|y)', 'Pełna lista: '+count+' utworów',markup)
-  temp=page.with_suffix('.html.tmp');temp.write_text(markup);os.replace(temp,page)
-  tracks=[{k:r[k] for k in ['id','artist','title']} for r in rows];temp=ROOT/'vinyl-player/tracks.json.tmp';temp.write_text(json.dumps(tracks,ensure_ascii=False));os.replace(temp,ROOT/'vinyl-player/tracks.json')
+  temp=page.with_suffix('.html.tmp');temp.write_text(markup, encoding='utf-8');os.replace(temp,page)
+  tracks=[{k:r[k] for k in ['id','artist','title']} for r in rows];temp=ROOT/'vinyl-player/tracks.json.tmp';temp.write_text(json.dumps(tracks,ensure_ascii=False), encoding='utf-8');os.replace(temp,ROOT/'vinyl-player/tracks.json')
  report['total']=len(rows);return report
 if __name__=='__main__':
- urls=Path(sys.argv[1]).read_text().splitlines();report=import_urls(urls,lambda u:print(u,flush=True));(ROOT/'import-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2));print(json.dumps({k:v for k,v in report.items() if k!='sources'},ensure_ascii=False))
+ urls=Path(sys.argv[1]).read_text(encoding='utf-8').splitlines();report=import_urls(urls,lambda u:print(u,flush=True));(ROOT/'import-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2), encoding='utf-8');print(json.dumps({k:v for k,v in report.items() if k!='sources'},ensure_ascii=False))

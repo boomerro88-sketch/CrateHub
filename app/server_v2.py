@@ -9,7 +9,7 @@ JOBS={};GUARD=threading.Lock()
 base.STATIC.update('/'+str(p.relative_to(ROOT)) for p in (ROOT/'vinyl-player').rglob('*') if p.is_file() and p.suffix in ['.js','.css','.html','.jpg','.png','.wav','.txt','.json','.wasm'])
 base.STATIC.update(['/producer-tools.js','/producer-tools.css'])
 def refresh():
- base.TRACKS=json.loads((ROOT/'catalog-data.json').read_text());base.TRACK_BY_ID={r['id']:r for r in base.TRACKS};base.IDS=set(base.TRACK_BY_ID)
+ base.TRACKS=json.loads((ROOT/'catalog-data.json').read_text(encoding='utf-8'));base.TRACK_BY_ID={r['id']:r for r in base.TRACKS};base.IDS=set(base.TRACK_BY_ID)
 def download(vid):
  ffmpeg=shutil.which('ffmpeg') or '/opt/homebrew/bin/ffmpeg'
  with tempfile.TemporaryDirectory() as d:

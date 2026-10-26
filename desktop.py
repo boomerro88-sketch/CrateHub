@@ -5,6 +5,8 @@ BUNDLE=Path(getattr(sys,'_MEIPASS',Path(__file__).resolve().parent))
 os.environ['PATH']=str(BUNDLE/'bin')+os.pathsep+os.environ.get('PATH','')
 # Frozen yt-dlp children must run the CLI, never recursively start the desktop UI.
 if len(sys.argv)>1 and sys.argv[1]=='--yt-dlp':
+ if sys.stdout is None:sys.stdout=open(os.devnull,'w',encoding='utf-8')
+ if sys.stderr is None:sys.stderr=open(os.devnull,'w',encoding='utf-8')
  import yt_dlp
  yt_dlp.main(sys.argv[2:]);sys.exit(0)
 VERSION='1.1.1'
@@ -16,7 +18,7 @@ def data_root():
  return Path.home()/'.local/share/cratehub'
 def prepare():
  root=data_root();root.mkdir(parents=True,exist_ok=True)
- seed=BUNDLE/'app';marker=root/'version.txt';old=marker.read_text().strip() if marker.exists() else None
+ seed=BUNDLE/'app';marker=root/'version.txt';old=marker.read_text(encoding='utf-8').strip() if marker.exists() else None
  if old!=VERSION:
   for source in seed.rglob('*'):
    if not source.is_file() or '__pycache__' in source.parts:continue
@@ -24,7 +26,7 @@ def prepare():
    # User-imported catalogue is persistent, also across application upgrades.
    if str(relative) in ['catalog-data.json','vinyl-player/tracks.json'] and dest.exists():continue
    dest.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source,dest)
-  marker.write_text(VERSION)
+  marker.write_text(VERSION, encoding='utf-8')
  if not (root/'catalog-data.json').exists():
   import gzip
   (root/'catalog-data.json').write_bytes(gzip.decompress((root/'catalog-data.json.gz').read_bytes()))

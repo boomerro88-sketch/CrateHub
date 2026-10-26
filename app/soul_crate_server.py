@@ -9,10 +9,10 @@ PAGE = 'crate_e_digger.html'
 STATIC = {'/crate_e_digger.html','/fonts/sharpie-hand.woff2','/', '/soul_crate_58_youtube_bpm_tonacja.html', '/soul_crate_1000.html', '/analyzer.js', '/analysis-worker.js','/soul_crate_10000.html','/catalog.js','/catalog.css','/catalog-data.json'}
 STATIC.update('/'+str(p.relative_to(ROOT)) for p in (ROOT/'vendor').rglob('*') if p.is_file() and p.suffix in {'.js','.wasm','.txt'})
 LIMIT = threading.BoundedSemaphore(2)
-TRACKS = json.loads((ROOT/'catalog-data.json').read_text())
+TRACKS = json.loads((ROOT/'catalog-data.json').read_text(encoding='utf-8'))
 TRACK_BY_ID = {r['id']:r for r in TRACKS}
 IDS = set(TRACK_BY_ID)
-USES = json.loads((ROOT/'catalog-uses.json').read_text())
+USES = json.loads((ROOT/'catalog-uses.json').read_text(encoding='utf-8'))
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
