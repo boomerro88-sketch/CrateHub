@@ -24,7 +24,7 @@ def prepare():
    if not source.is_file() or '__pycache__' in source.parts:continue
    relative=source.relative_to(seed);dest=root/relative
    # User-imported catalogue is persistent, also across application upgrades.
-   if str(relative) in ['catalog-data.json','vinyl-player/tracks.json'] and dest.exists():continue
+   if relative.as_posix() in ['catalog-data.json','vinyl-player/tracks.json'] and dest.exists():continue
    dest.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source,dest)
   marker.write_text(VERSION, encoding='utf-8')
  if not (root/'catalog-data.json').exists():

@@ -7,7 +7,7 @@ import html, os, re, shutil, subprocess, sys, tempfile, threading, webbrowser, j
 ROOT = Path(os.environ.get('CRATE_DATA_ROOT',Path(__file__).resolve().parent))
 PAGE = 'crate_e_digger.html'
 STATIC = {'/crate_e_digger.html','/fonts/sharpie-hand.woff2','/', '/soul_crate_58_youtube_bpm_tonacja.html', '/soul_crate_1000.html', '/analyzer.js', '/analysis-worker.js','/soul_crate_10000.html','/catalog.js','/catalog.css','/catalog-data.json'}
-STATIC.update('/'+str(p.relative_to(ROOT)) for p in (ROOT/'vendor').rglob('*') if p.is_file() and p.suffix in {'.js','.wasm','.txt'})
+STATIC.update('/'+p.relative_to(ROOT).as_posix() for p in (ROOT/'vendor').rglob('*') if p.is_file() and p.suffix in {'.js','.wasm','.txt'})
 LIMIT = threading.BoundedSemaphore(2)
 TRACKS = json.loads((ROOT/'catalog-data.json').read_text(encoding='utf-8'))
 TRACK_BY_ID = {r['id']:r for r in TRACKS}

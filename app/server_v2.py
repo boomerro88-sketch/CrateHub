@@ -6,7 +6,7 @@ ROOT=Path(os.environ.get('CRATE_DATA_ROOT',Path(__file__).resolve().parent))
 import soul_crate_server as base
 from importer import import_urls
 JOBS={};GUARD=threading.Lock()
-base.STATIC.update('/'+str(p.relative_to(ROOT)) for p in (ROOT/'vinyl-player').rglob('*') if p.is_file() and p.suffix in ['.js','.css','.html','.jpg','.png','.wav','.txt','.json','.wasm'])
+base.STATIC.update('/'+p.relative_to(ROOT).as_posix() for p in (ROOT/'vinyl-player').rglob('*') if p.is_file() and p.suffix in ['.js','.css','.html','.jpg','.png','.wav','.txt','.json','.wasm'])
 base.STATIC.update(['/producer-tools.js','/producer-tools.css'])
 def refresh():
  base.TRACKS=json.loads((ROOT/'catalog-data.json').read_text(encoding='utf-8'));base.TRACK_BY_ID={r['id']:r for r in base.TRACKS};base.IDS=set(base.TRACK_BY_ID)

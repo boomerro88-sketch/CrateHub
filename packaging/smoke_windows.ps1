@@ -15,6 +15,11 @@ try {
  Write-Host "Native window loaded: $($health | ConvertTo-Json -Compress)"
  $page = Invoke-WebRequest 'http://localhost:8890/crate_e_digger.html' -UseBasicParsing
  if ($page.StatusCode -ne 200) { throw 'Catalogue not available' }
+ foreach ($asset in @('/vinyl-player/assets/record-crate-empty.png','/vinyl-player/assets/record-layers/records-00.png','/vinyl-player/assets/record-layers/records-30.png','/vinyl-player/assets/vinyl-crackle.wav')) {
+  $response = Invoke-WebRequest ('http://localhost:8890'+$asset) -UseBasicParsing
+  if ($response.StatusCode -ne 200 -or $response.RawContentLength -lt 100) { throw "Missing asset: $asset" }
+  Write-Host "Asset OK: $asset"
+ }
 } finally {
  if (-not $p.HasExited) { Stop-Process -Id $p.Id -Force }
  if (Test-Path "$env:CRATE_DESKTOP_DATA\desktop.log") { Get-Content "$env:CRATE_DESKTOP_DATA\desktop.log" | Select-Object -Last 15 }
