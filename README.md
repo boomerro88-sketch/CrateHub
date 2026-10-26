@@ -21,9 +21,11 @@ Aplikacja ma własny profil danych. W dotychczasowej stronie wybierz **Rozpakuj 
 
 Dane: `~/Library/Application Support/CrateHub`. Usunięcie samej aplikacji nie usuwa tych danych. Analiza BPM i tonacji jest szacunkiem automatycznym, odrębnym od danych źródłowych. Dostępność osadzania i audio zależy od YouTube.
 
-## Windows
+## Windows 10/11 x64
 
-Źródła zawierają konfigurację budowania natywnego okna dla Windows x64 przez pywebview / Edge WebView2. Nowe wydanie 1.1 wymaga osobnego buildu i testów na Windows. Starszy instalator 1.0.1 otwierał przeglądarkę i nie jest odpowiednikiem tej wersji.
+Instalator 1.1.1 otwiera CrateHub we własnym oknie. Zawiera Python, Node i FFmpeg; w razie potrzeby instaluje Microsoft WebView2. Język instalatora: PL/EN. Instalacja brakującego WebView2 wymaga internetu. Paczki Windows są budowane i sprawdzane przez GitHub Actions na Windows.
+
+Starszy instalator 1.0.1 otwierał przeglądarkę; nie należy go używać jako wersji aplikacji desktopowej.
 
 ## Budowanie
 

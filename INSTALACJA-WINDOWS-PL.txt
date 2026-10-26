@@ -1,0 +1,17 @@
+CrateHub 1.1.1 — Windows 10/11, 64-bit (x64)
+
+1. Pobierz CrateHub-1.1.1-Windows-x64-Setup.exe.
+2. Uruchom instalator i wybierz język polski lub angielski.
+3. Po instalacji uruchom CrateHub ze skrótu na pulpicie lub z menu Start.
+
+Program ma własne okno. Nie otwiera katalogu w przeglądarce.
+Python, Node i FFmpeg są dołączone. Jeśli system nie ma Microsoft WebView2, instalator pobierze i zainstaluje go od Microsoft; w tym przypadku instalacja wymaga internetu.
+
+Do YouTube, importu playlist i pobierania MP3 również potrzebny jest internet.
+Aplikacja i dane są zapisywane w profilu użytkownika; nie wymaga instalowania środowiska programistycznego.
+
+Przenoszenie skrzynek: w starej stronie wybierz „Rozpakuj skrzynkę” (eksport JSON), a następnie w programie „Zapakuj skrzynkę” (import JSON).
+
+Pakiet testowy, bez komercyjnego podpisu Authenticode. Windows może wyświetlić ostrzeżenie o nieznanym wydawcy. Nie wyłączaj zabezpieczeń systemu.
+
+Wersja x64: dla komputerów z procesorami Intel/AMD. Działanie na Windows ARM przez emulację nie jest objęte testami tego wydania.
