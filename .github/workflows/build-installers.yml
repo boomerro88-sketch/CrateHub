@@ -38,7 +38,9 @@ jobs:
         shell: pwsh
         run: |
           $env:CRATE_DESKTOP_DATA = "$env:RUNNER_TEMP\cratehub-test"
-          $p = Start-Process -FilePath "dist\CrateHub\CrateHub.exe" -ArgumentList '--self-test' -Wait -PassThru
+          $p = Start-Process -FilePath "dist\CrateHub\CrateHub.exe" -ArgumentList '--self-test' -PassThru
+          if (-not $p.WaitForExit(90000)) { Stop-Process -Id $p.Id -Force; Get-Content "$env:CRATE_DESKTOP_DATA\desktop.log"; throw 'Bundled self-test timed out' }
+          Get-Content "$env:CRATE_DESKTOP_DATA\desktop.log"
           if ($p.ExitCode -ne 0) { throw "Self-test failed: $($p.ExitCode)" }
           Get-Content "$env:CRATE_DESKTOP_DATA\desktop.log"
       - name: Smoke test native window and local service
@@ -57,3 +59,12 @@ jobs:
         with:
           name: CrateHub-Windows-x64-installer
           path: release/*
+
+      - name: Upload diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: CrateHub-Windows-diagnostics
+          path: |
+            ${{ runner.temp }}/cratehub-test/desktop.log
+            ${{ runner.temp }}/cratehub-ui-test/desktop.log

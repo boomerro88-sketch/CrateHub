@@ -82,7 +82,9 @@ def main():
 if __name__=='__main__':
  try:main()
  except Exception as error:
-  if '--headless' in sys.argv or '--self-test' in sys.argv:raise
+  if '--headless' in sys.argv or '--self-test' in sys.argv:
+   import traceback
+   traceback.print_exc();sys.exit(1)
   if sys.platform=='win32':
    import ctypes
    ctypes.windll.user32.MessageBoxW(None,str(error),'CrateHub',0x10);sys.exit(1)
