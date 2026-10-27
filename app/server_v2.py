@@ -58,9 +58,21 @@ class Handler(base.Handler):
   refresh();vid=args.get('id',[''])[0];mode=args.get('noise',['off'])[0]
   try:volume=float(args.get('volume',['0.22'])[0]);assert 0<=volume<=1 and mode in ['off','intro','full'] and vid in base.IDS
   except Exception:return self.send_error(400)
+  clip=None
+  try:
+   if 'start' in args or 'end' in args:
+    import math
+    begin=float(args.get('start',[''])[0]);finish=float(args.get('end',[''])[0])
+    assert math.isfinite(begin) and math.isfinite(finish) and 0<=begin<finish<=1800
+    clip=(begin,finish)
+  except Exception:return self.send_error(400)
   if not base.LIMIT.acquire(False):return self.send_error(429)
   try:
    data=download(vid)
+   if clip:
+    with tempfile.TemporaryDirectory() as folder:
+     src=Path(folder)/'source.mp3';out=Path(folder)/'clip.mp3';src.write_bytes(data)
+     subprocess.run([shutil.which('ffmpeg') or '/opt/homebrew/bin/ffmpeg','-hide_banner','-loglevel','error','-i',str(src),'-ss',str(clip[0]),'-t',str(clip[1]-clip[0]),'-vn','-c:a','libmp3lame','-q:a','2',str(out)],check=True,capture_output=True,timeout=300,**({'creationflags':subprocess.CREATE_NO_WINDOW} if sys.platform=='win32' else {}));data=out.read_bytes()
    if mode!='off':
     with tempfile.TemporaryDirectory() as folder:
      folder=Path(folder);src=folder/'original.mp3';out=folder/'vinyl.mp3';src.write_bytes(data)

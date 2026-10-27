@@ -148,3 +148,29 @@ if(new URLSearchParams(location.search).has('embedded')){
  });
  if(parentOrigin){let pending=false;const report=()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;parent.postMessage({type:'vinyl:height',height:document.documentElement.scrollHeight},parentOrigin);});};new ResizeObserver(report).observe(document.body);report();}
 }
+
+// Saved listening notes refer to the original recording's timeline, before pitch changes.
+if(crateMode){
+ const markerKey='cratehub-markers-v1';let markerTrack=current.id;
+ const box=document.createElement('section');box.className='crate-markers';
+ const en=()=>window.CrateI18n?.language==='en',t=(a,b)=>en()?b:a;
+ const heading=document.createElement('h2');heading.textContent=t('MARKERY I FRAGMENTY','MARKERS AND EXCERPTS');
+ const start=document.createElement('input'),end=document.createElement('input'),note=document.createElement('textarea'),list=document.createElement('div'),message=document.createElement('p');
+ for(const field of [start,end]){field.type='number';field.min=0;field.step=.1;field.placeholder='0.0';}
+ start.setAttribute('aria-label',t('Początek w sekundach','Start in seconds'));end.setAttribute('aria-label',t('Koniec w sekundach','End in seconds'));note.maxLength=2000;note.placeholder=t('Notatka do markera lub fragmentu','Note for this marker or excerpt');note.setAttribute('aria-label',note.placeholder);message.setAttribute('role','status');
+ const position=()=>Math.max(0,vinylMode?(audio.currentTime||0):(ready?player.getCurrentTime()||0:0));
+ const length=()=>vinylMode?(audio.duration||0):(ready?player.getDuration()||0:0);
+ const button=(label,fn)=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=fn;return b;};
+ function read(){try{const value=JSON.parse(localStorage.getItem(markerKey));return value&&typeof value==='object'&&!Array.isArray(value)?value:{};}catch(_){return {};}}
+ function write(data){try{localStorage.setItem(markerKey,JSON.stringify(data));return true;}catch(_){message.textContent=t('Nie udało się zapisać markerów.','Could not save markers.');return false;}}
+ function jump(seconds){if(vinylMode){audio.currentTime=Math.min(seconds,audio.duration||seconds);}else if(ready)player.seekTo(seconds,true);$('seek').value=length()?seconds/length()*1000:0;$('elapsed').textContent=time(seconds);if(engaged)arm(length()?seconds/length():0);}
+ function render(){list.replaceChildren();const markers=read()[current.id]||[];for(const marker of markers){const row=document.createElement('div');row.className='crate-marker-row';const at=button(time(marker.start)+(marker.end!==null?' – '+time(marker.end):'')+' ↗',()=>{start.value=marker.start;end.value=marker.end??'';note.value=marker.note;jump(marker.start);});const text=document.createElement('p');text.textContent=marker.note;const remove=button(t('Usuń marker','Remove marker'),()=>{const data=read();data[current.id]=(data[current.id]||[]).filter(x=>x.id!==marker.id);if(write(data))render();});row.append(at,text,remove);list.append(row);}}
+ const a=button(t('A · Początek tutaj','A · Start here'),()=>{start.value=position().toFixed(1);});
+ const b=button(t('B · Koniec tutaj','B · End here'),()=>{end.value=position().toFixed(1);});
+ function selection(){const from=Number(start.value),to=end.value===''?null:Number(end.value);if(start.value===''||!Number.isFinite(from)||from<0||(to!==null&&(!Number.isFinite(to)||to<=from))||(length()&&(from>=length()||(to!==null&&to>length()+.2))))throw Error(t('Podaj początek i późniejszy koniec. Sam początek zapisuje marker.','Enter a start and a later end. Start alone saves a timestamp.'));return {start:from,end:to};}
+ const save=button(t('Zapisz marker / fragment','Save marker / excerpt'),()=>{try{const entry=selection(),data=read();entry.id=crypto.randomUUID();entry.note=note.value.trim();data[current.id]=[...(data[current.id]||[]),entry].sort((a,b)=>a.start-b.start);if(write(data)){render();message.textContent=t('Zapisano dla tego utworu.','Saved for this track.');}}catch(e){message.textContent=e.message;}});
+ const download=button(t('Pobierz fragment MP3','Download excerpt MP3'),async()=>{try{const selected=selection();if(selected.end===null)throw Error(t('Zaznacz również koniec fragmentu (B).','Select the end of the excerpt (B) too.'));const id=current.id,track={...current};download.disabled=true;message.textContent=t('Przygotowywanie fragmentu…','Preparing excerpt…');const response=await fetch('/download',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({id,noise:'off',start:String(selected.start),end:String(selected.end)})});if(!response.ok)throw Error(t('Nie udało się pobrać fragmentu. Spróbuj ponownie.','Could not download excerpt. Try again.'));const url=URL.createObjectURL(await response.blob()),link=document.createElement('a');link.href=url;link.download=track.artist+' - '+track.title+' - '+selected.start+'-'+selected.end+'.mp3';link.click();setTimeout(()=>URL.revokeObjectURL(url),60000);if(current.id===id)message.textContent=t('Fragment gotowy.','Excerpt ready.');}catch(e){message.textContent=e.message;}finally{download.disabled=false;}});
+ const hint=document.createElement('p');hint.textContent=t('Czasy w sekundach oryginału. Wybierz A i B podczas odsłuchu lub wpisz je ręcznie. Pobierany fragment jest bez szumu i bez zmiany pitch.','Times are original recording seconds. Set A and B while listening or enter them manually. Export uses original pitch with no crackle.');
+ box.append(heading,a,start,b,end,note,save,download,hint,message,list);document.querySelector('.timeline').after(box);
+ document.addEventListener('vinyl:track',()=>{markerTrack=current.id;start.value='';end.value='';note.value='';message.textContent='';render();});window.addEventListener('storage',e=>{if(e.key===markerKey)render();});render();
+}
