@@ -3,7 +3,9 @@ window.CrateRegionTaxonomy=["Arabskie / Bliski Wschód","Afryka", "Afryka Połud
 (() => {
   'use strict';
   const CACHE = 'soulcrate-essentia-0.1.3-v1:';
-  const PAGE_SIZE = 50;
+  const PAGE_SIZE = 20;
+  const collator = new Intl.Collator('pl',{sensitivity:'base',numeric:true});
+  let alphabetical=[];
   const notes = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
   const enharmonic = {'C#':'Db','D#':'Eb','F#':'Gb','G#':'Ab','A#':'Bb','Cb':'B','Fb':'E','E#':'F','B#':'C','H':'B'};
   function normalizeKey(value) {
@@ -51,14 +53,14 @@ window.CrateRegionTaxonomy=["Arabskie / Bliski Wschód","Afryka", "Afryka Połud
     if(f.country.value&&!(Array.isArray(row.country)?row.country:[row.country||'Nieustalone']).includes(f.country.value))return false;
     if(f.region.value&&!(row.regions||[row.region]).includes(f.region.value)&&row.region!==f.region.value&&row.subregion!==f.region.value)return false;
     
-    const k=keyFor(row);if(f.key.value&&(f.key.value==='unknown'?k!==null:k!==f.key.value))return false;
+    if(f.key.value){const k=keyFor(row);if(f.key.value==='unknown'?k!==null:k!==f.key.value)return false;}
     const y=Number(row.year);if(!row.year||!Number.isFinite(y)){if(!f.unknownYear.checked)return false;}else{
       if(f.yearFrom.value&&y<Number(f.yearFrom.value))return false;
       if(f.yearTo.value&&y>Number(f.yearTo.value))return false;
     }
     return true;
   }
-  function apply(){syncKeyPads();filtered=rows.filter(r=>matches(r)&&(!window.CrateProducer||CrateProducer.matches(r)));const sort=fields.order?.value||'az';filtered.sort((a,b)=>sort==='new'?b.added_order-a.added_order:sort==='old'?a.added_order-b.added_order:(sort==='za'?-1:1)*(a.artist.localeCompare(b.artist,'pl',{sensitivity:'base',numeric:true})||a.title.localeCompare(b.title,'pl',{sensitivity:'base',numeric:true})));page=Math.min(page,Math.max(1,Math.ceil(filtered.length/PAGE_SIZE)));render();}
+  function apply(){syncKeyPads();const sort=fields.order?.value||'az';const base=sort==='new'?[...rows].reverse():sort==='old'?rows:sort==='za'?[...alphabetical].reverse():alphabetical;filtered=base.filter(r=>matches(r)&&(!window.CrateProducer||CrateProducer.matches(r)));page=Math.min(page,Math.max(1,Math.ceil(filtered.length/PAGE_SIZE)));render();}
   function badge(text, cls=''){return element('span','catalog-badge '+cls,text);}
   const dataSpan=value=>{const s=element('span',value?'':'nodata',value?String(value):'brak danych');return s;};
   function selectCard(id,card){selectedId=id;document.querySelectorAll('.catalog-card.is-selected').forEach(c=>{c.classList.remove('is-selected');c.removeAttribute('aria-current');});card.classList.add('is-selected');card.setAttribute('aria-current','true');}
@@ -87,18 +89,22 @@ window.CrateRegionTaxonomy=["Arabskie / Bliski Wschód","Afryka", "Afryka Połud
     uses.addEventListener('toggle',async()=>{if(!uses.open||loaded)return;loaded=true;list.textContent='Wczytywanie pełnej listy z archiwum…';try{const response=await fetch('/uses?id='+encodeURIComponent(row.id));if(!response.ok)throw new Error();const html=await response.text();const doc=new DOMParser().parseFromString(html,'text/html');doc.querySelectorAll('script,iframe,object,embed,style,link').forEach(x=>x.remove());doc.querySelectorAll('*').forEach(x=>{[...x.attributes].forEach(a=>{if(a.name.startsWith('on'))x.removeAttribute(a.name);});if(x.tagName==='A'){x.href=safeURL(x.getAttribute('href'));x.target='_blank';x.rel='noopener noreferrer';}});list.replaceChildren(...doc.body.childNodes);}catch(_){list.textContent='Nie udało się wczytać listy. Skorzystaj z linku WhoSampled.';loaded=false;}});
     card.append(uses);return card;
   }
-  function compactRow(row){const details=element('details','catalog-compact');const summary=element('summary');summary.append(element('span','catalog-row-number','#'+String(row.number).padStart(5,'0')),element('span','catalog-row-artist',row.artist),element('span','catalog-row-title',row.title),element('span','catalog-row-year',row.year||'Brak roku'));details.append(summary);details.addEventListener('toggle',()=>{if(details.open&&!details.querySelector('article'))details.append(createCard(row));});return details;}
+  function compactRow(row){const details=element('details','catalog-compact');const summary=element('summary');summary.append(element('span','catalog-row-number','#'+String(row.number).padStart(5,'0')),element('span','catalog-row-artist',row.artist),element('span','catalog-row-title',row.title),element('span','catalog-row-year',row.year||'Brak roku'));details.append(summary);details.addEventListener('toggle',()=>{if(details.open&&!details.querySelector('article')){details.append(createCard(row));root.dispatchEvent(new CustomEvent('soulcrate:rendered',{bubbles:true}));}});return details;}
   function render(){
     const total=filtered.length,pages=Math.max(1,Math.ceil(total/PAGE_SIZE)),start=(page-1)*PAGE_SIZE,end=Math.min(start+PAGE_SIZE,total);
     const counter=root.querySelector('.catalog-total-number');counter.textContent=format(rows.length);
-    summary.textContent=mode==='all'?`${format(total)} z ${format(rows.length)} utworów · widoczna cała lista. Rozwiń wiersz, aby odsłuchać nagranie.`:`${format(total)} z ${format(rows.length)} utworów · widoczne ${total?format(start+1):'0'}–${format(end)} · strona ${page} z ${pages}`;
+    summary.textContent=`${format(total)} z ${format(rows.length)} utworów · widoczne ${total?format(start+1):'0'}–${format(end)} · strona ${page} z ${pages}`;
     grid.className=mode==='all'?'catalog-compact-list':'grid catalog-grid';grid.replaceChildren();
     if(!total){grid.append(element('div','catalog-empty','Brak utworów spełniających wszystkie filtry. Zmień kryteria lub wyczyść filtry.'));}
-    else if(mode==='all'){const fragment=document.createDocumentFragment();filtered.forEach(row=>fragment.append(compactRow(row)));grid.append(fragment);}
+    else if(mode==='all'){const fragment=document.createDocumentFragment();filtered.slice(start,end).forEach(row=>fragment.append(compactRow(row)));grid.append(fragment);}
     else filtered.slice(start,end).forEach(row=>grid.append(createCard(row)));
     pagination.replaceChildren();
     const make=(label,handler,disabled=false)=>{const b=element('button','catalog-button',label);b.type='button';b.disabled=disabled;b.addEventListener('click',handler);pagination.append(b);return b;};
-    if(mode==='cards'){make('← Poprzednie 50',()=>{page--;render();grid.scrollIntoView({block:'start',behavior:'smooth'});},page<=1);pagination.append(element('span','catalog-page-label',`${page} / ${pages}`));make('Następne 50 →',()=>{page++;render();grid.scrollIntoView({block:'start',behavior:'smooth'});},page>=pages);make(`Pokaż całą listę (${format(total)})`,()=>{mode='all';render();},!total);}else make('Wróć do kart — 50 na stronie',()=>{mode='cards';page=1;render();});
+    const turn=next=>{page=Math.max(1,Math.min(pages,next));render();grid.scrollIntoView({block:'start',behavior:'smooth'});};
+    make('← Poprzednia',()=>turn(page-1),page<=1);
+    const pageLabel=element('label','catalog-page-label','Strona '), pageInput=element('input','catalog-page-input');pageInput.type='number';pageInput.min='1';pageInput.max=String(pages);pageInput.value=String(page);pageInput.setAttribute('aria-label','Numer strony');const goToPage=()=>{const next=Number(pageInput.value);if(Number.isInteger(next)&&next>=1&&next<=pages)turn(next);else pageInput.value=String(page);};pageInput.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();goToPage();}});pageLabel.append(pageInput,document.createTextNode(' / '+pages));pagination.append(pageLabel);make('Idź',goToPage);
+    make('Następna →',()=>turn(page+1),page>=pages);
+    make(mode==='cards'?'Widok listy':'Widok kart',()=>{mode=mode==='cards'?'all':'cards';render();},!total);
     root.dispatchEvent(new CustomEvent('soulcrate:rendered',{bubbles:true}));
   }
   function group(cls,title){const g=element('div','filter-group '+cls);g.setAttribute('role','group');g.setAttribute('aria-label',title);g.append(element('h3','panel-title',title));return g;}
@@ -131,7 +137,7 @@ window.CrateRegionTaxonomy=["Arabskie / Bliski Wschód","Afryka", "Afryka Połud
     document.addEventListener('soulcrate:analysis',event=>{const id=event.detail&&event.detail.id;if(!id)return;let signature;try{signature=localStorage.getItem(CACHE+id);}catch(_){return;}if(analysisSignatures.get(id)===signature)return;analysisSignatures.set(id,signature);if(fields.key.value)apply();});
     window.addEventListener('storage',event=>{if(event.key&&event.key.startsWith(CACHE))apply();});
   }
-  async function start(){root=document.getElementById('catalog-app');if(!root)return;root.textContent='Wczytywanie pełnego katalogu…';try{const response=await fetch('catalog-data.json');if(!response.ok)throw new Error();const data=await response.json();rows=Array.isArray(data)?data:(data.tracks||data.entries||[]);if(!rows.length)throw new Error();rows=rows.filter(row=>row&&row.artist&&row.title&&/^[A-Za-z0-9_-]{11}$/.test(row.id||''));if(!rows.length)throw new Error();const col=new Intl.Collator('pl',{sensitivity:'base',numeric:true,ignorePunctuation:true});rows.forEach((r,i)=>{r.added_order=i;r.number=i+1;});window.CrateRows=rows;mount();const staticCatalog=document.getElementById('static-catalog');if(staticCatalog)staticCatalog.hidden=true;}catch(_){root.textContent='Filtry są chwilowo niedostępne. Pełny katalog poniżej pozostaje dostępny.';}}
+  async function start(){root=document.getElementById('catalog-app');if(!root)return;root.textContent='Wczytywanie pełnego katalogu…';try{const response=await fetch('catalog-data.json');if(!response.ok)throw new Error();const data=await response.json();rows=Array.isArray(data)?data:(data.tracks||data.entries||[]);if(!rows.length)throw new Error();rows=rows.filter(row=>row&&row.artist&&row.title&&/^[A-Za-z0-9_-]{11}$/.test(row.id||''));if(!rows.length)throw new Error();rows.forEach((r,i)=>{r.added_order=i;r.number=i+1;});alphabetical=[...rows].sort((a,b)=>collator.compare(a.artist,b.artist)||collator.compare(a.title,b.title));window.CrateRows=rows;mount();const staticCatalog=document.getElementById('static-catalog');if(staticCatalog)staticCatalog.hidden=true;}catch(_){root.textContent='Filtry są chwilowo niedostępne. Pełny katalog poniżej pozostaje dostępny.';}}
   document.addEventListener('cratehub:language',()=>{document.querySelectorAll('iframe').forEach(frame=>{try{frame.contentWindow.postMessage({type:'cratehub:language',language:window.CrateI18n.language},location.origin);}catch(_){}});});
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();

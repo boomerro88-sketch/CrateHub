@@ -62,7 +62,8 @@ def import_urls(urls,progress=None):
   page=ROOT/'crate_e_digger.html';markup=page.read_text(encoding='utf-8');present=set(re.findall(r'youtube.com/watch\?v=([\w-]{11})',markup));cards=[]
   for r in rows:
    if r['id'] not in present:cards.append('<article class="static-item"><span>#'+str(r['number'])+'</span><h2>'+html.escape(r['artist']+' — '+r['title'])+'</h2><p>Brak danych o roku, BPM i tonacji</p><a href="https://www.youtube.com/watch?v='+r['id']+'">Oryginał YouTube</a> · <a href="'+html.escape(r.get('whosampled_url',''),quote=True)+'">WhoSampled</a></article>')
-  markup=markup.replace('</section><section class="panel" id="o-danych"',''.join(cards)+'</section><section class="panel" id="o-danych"')
+  marker='</section></noscript><section class="panel" id="o-danych"' if '</section></noscript><section class="panel" id="o-danych"' in markup else '</section><section class="panel" id="o-danych"'
+  markup=markup.replace(marker,''.join(cards)+marker,1)
   count=f'{len(rows):,}'.replace(',',' ');markup=re.sub(r'<title>CrateHub — .*?</title>','<title>CrateHub — '+count+' utworów</title>',markup);markup=re.sub(r'Pełna lista: [\d ]+ utwor(?:ów|y)', 'Pełna lista: '+count+' utworów',markup)
   temp=page.with_suffix('.html.tmp');temp.write_text(markup, encoding='utf-8');os.replace(temp,page)
   tracks=[{k:r[k] for k in ['id','artist','title']} for r in rows];temp=ROOT/'vinyl-player/tracks.json.tmp';temp.write_text(json.dumps(tracks,ensure_ascii=False), encoding='utf-8');os.replace(temp,ROOT/'vinyl-player/tracks.json')
