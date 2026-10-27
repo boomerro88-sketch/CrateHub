@@ -74,7 +74,7 @@ window.onYouTubeIframeAPIReady=()=>{player=new YT.Player('youtube',{host:'https:
 $('play').onclick=play;$('start').onclick=play;
 $('seek').oninput=()=>{if(vinylMode&&audio.duration){audio.currentTime=Number($('seek').value)/1000*audio.duration;return;}if(ready&&player.getDuration()){const p=Number($('seek').value)/1000;player.seekTo(p*player.getDuration(),true);if(engaged)arm(p);}};
 function chooseTrack(next){
- if(!next)return;if(audioRequest)audioRequest.abort();audioRequest=null;audioPreparing=null;if(ready)stop();vinylMode=false;audio.removeAttribute('src');current=next;artwork();$('elapsed').textContent='0:00';$('duration').textContent='0:00';$('vinylAudio').textContent='AUDIO VINYL / PITCH AKTYWNE';$('vinylAudio').disabled=false;if(ready)player.cueVideoById(current.id);speed();if(crateTrackSelect)crateTrackSelect.value=current.id;status('Nowa płyta na talerzu. Naciśnij START.');
+ if(!next)return;if(audioRequest)audioRequest.abort();audioRequest=null;audioPreparing=null;if(ready)stop();vinylMode=false;audio.removeAttribute('src');current=next;artwork();$('elapsed').textContent='0:00';$('duration').textContent='0:00';if(ready)player.cueVideoById(current.id);speed();if(crateTrackSelect)crateTrackSelect.value=current.id;status('Nowa płyta na talerzu. Naciśnij START.');
 }
 $('random').onclick=()=>{if(!tracks.length){status(crateMode?'Ta skrzynka jest pusta. Dodaj utwory w Explorerze.':'Baza jest jeszcze niedostępna.');return;}let next;do{const n=new Uint32Array(1);crypto.getRandomValues(n);next=tracks[Math.floor(n[0]/4294967296*tracks.length)];}while(tracks.length>1&&next.id===current.id);chooseTrack(next);};
 function refreshCratePool(){
@@ -91,8 +91,8 @@ function refreshCratePool(){
  crateTrackSelect.replaceChildren(new Option('Wybierz utwór ze skrzynki…',''));tracks.forEach(r=>crateTrackSelect.add(new Option(r.artist+' — '+r.title,r.id)));
  crateStatus.textContent=tracks.length?tracks.length+' utworów · odtwarzanie wyłącznie z Twoich skrzynek':'Skrzynka jest pusta. Dodaj do niej utwory w Explorerze przez „Do skrzynki…”.';
  $('cover').hidden=!tracks.length;$('trackTools').hidden=!tracks.length;document.querySelector('.source').hidden=!tracks.length;
- for(const id of ['play','start','seek','vinylAudio','random'])$(id).disabled=!tracks.length||(!ready&&id!=='random');
- if(!tracks.length){if(ready){if(audioRequest)audioRequest.abort();audioRequest=null;audioPreparing=null;stop();}for(const id of ['play','start','seek','vinylAudio','random'])$(id).disabled=true;$('title').textContent='Pusta skrzynka';$('artist').textContent='Dodaj utwory w Explorerze';status('Brak utworów do odtwarzania z tej skrzynki.');return;}
+ for(const id of ['play','start','seek','random'])$(id).disabled=!tracks.length||(!ready&&id!=='random');
+ if(!tracks.length){if(ready){if(audioRequest)audioRequest.abort();audioRequest=null;audioPreparing=null;stop();}for(const id of ['play','start','seek','random'])$(id).disabled=true;$('title').textContent='Pusta skrzynka';$('artist').textContent='Dodaj utwory w Explorerze';status('Brak utworów do odtwarzania z tej skrzynki.');return;}
  if(ready&&(!initialSpin||!tracks.some(r=>r.id===current.id))){initialSpin=true;$('random').click();}else crateTrackSelect.value=current.id;
 }
 if(crateMode){
@@ -117,7 +117,6 @@ async function ensureVinyl(forcePlay=false){
  if(vinylMode){speed();if(forcePlay)await beginPlayback();return;}
  if(audioPreparing){await audioPreparing;if(forcePlay&&vinylMode)await beginPlayback();return;}
  const id=current.id,controller=new AbortController();audioRequest=controller;
- const b=$('vinylAudio');b.disabled=true;
  status('Przygotowanie audio: pitch oraz 33/45 będą zmieniały tempo i wysokość dźwięku…');
  audioPreparing=(async()=>{
   const response=await fetch('/audio?id='+encodeURIComponent(id),{signal:controller.signal});
@@ -130,12 +129,10 @@ async function ensureVinyl(forcePlay=false){
   await new Promise((resolve,reject)=>{audio.onloadedmetadata=resolve;audio.onerror=()=>reject(Error('Nie udało się odczytać audio.'));audio.load();});
   if(current.id!==id||controller.signal.aborted)return;
   audio.currentTime=Math.min(position,audio.duration||0);vinylMode=true;speed();
-  b.textContent='AUDIO VINYL / PITCH AKTYWNE';
   if(resume)await beginPlayback();else status('Audio gotowe. Pitch i 33/45 zmieniają tempo oraz wysokość dźwięku.');
  })();
- try{await audioPreparing;}finally{if(audioRequest===controller){audioRequest=null;audioPreparing=null;b.disabled=false;}}
+ try{await audioPreparing;}finally{if(audioRequest===controller){audioRequest=null;audioPreparing=null;}}
 }
-$('vinylAudio').onclick=()=>{unlockNoise().catch(()=>{});ensureVinyl(true).catch(e=>status(e.message));};
 audio.onplaying=()=>{awaitingPlayback=false;engaged=true;syncNoise();$('deck').classList.add('playing');$('play').textContent='Ⅱ PAUZA';arm(progressNow());status('Oryginalne audio · płynny pitch ±8% · bez zachowywania wysokości tonu');};audio.onpause=()=>{if(cueing||awaitingPlayback)return;stopNoise();$('deck').classList.remove('playing');$('play').textContent='▶ START';if(vinylMode&&engaged)status('Pauza · igła pozostaje w bieżącym miejscu.');};audio.onended=stop;speed();
 
 // The catalogue hosts the same player as a mode; leaving it pauses all sound.
@@ -146,7 +143,7 @@ if(new URLSearchParams(location.search).has('embedded')){
  window.addEventListener('message',event=>{
   if(event.source!==parent||event.origin!==parentOrigin||!['vinyl:pause','vinyl:crate-refresh'].includes(event.data?.type))return;
   if(event.data.type==='vinyl:crate-refresh'){refreshCratePool();return;}
-  if(audioRequest){audioRequest.abort();audioRequest=null;audioPreparing=null;$('vinylAudio').disabled=false;}
+  if(audioRequest){audioRequest.abort();audioRequest=null;audioPreparing=null;}
   awaitingPlayback=false;if(cueing)stop();else{audio.pause();if(ready)player.pauseVideo();stopNoise();$('deck').classList.remove('playing');}
  });
  if(parentOrigin){let pending=false;const report=()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;parent.postMessage({type:'vinyl:height',height:document.documentElement.scrollHeight},parentOrigin);});};new ResizeObserver(report).observe(document.body);report();}
