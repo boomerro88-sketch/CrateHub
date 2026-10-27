@@ -33,7 +33,7 @@ window.CrateRegionTaxonomy=["Arabskie / Bliski Wschód","Afryka", "Afryka Połud
     appMode=value;explorerPanel.hidden=value!=='explorer';roulettePanel.hidden=value!=='roulette';cratePlayerPanel.hidden=value!=='crate-player';
     root.querySelectorAll('[data-app-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.appMode===value)));
     for(const [name,frame]of [['roulette',vinylFrame],['crate-player',cratePlayerFrame]]){
-      if(value===name){if(!frame.src)frame.src=vinylOrigin+'/vinyl-player/index.html?embedded=1&v=roulette-save-v1'+(name==='crate-player'?'&source=crate':'');else if(name==='crate-player')frame.contentWindow.postMessage({type:'vinyl:crate-refresh'},vinylOrigin);}
+      if(value===name){if(!frame.src)frame.src=vinylOrigin+'/vinyl-player/index.html?embedded=1&v=default-vinyl-v1'+(name==='crate-player'?'&source=crate':'');else if(name==='crate-player')frame.contentWindow.postMessage({type:'vinyl:crate-refresh'},vinylOrigin);}
       else if(frame.contentWindow)frame.contentWindow.postMessage({type:'vinyl:pause'},vinylOrigin);
     }
     if(value!=='explorer')explorerPanel.querySelectorAll('iframe').forEach(frame=>{try{frame.contentWindow.postMessage(JSON.stringify({event:'command',func:'pauseVideo',args:[]}),new URL(frame.src).origin);}catch(_){}});
