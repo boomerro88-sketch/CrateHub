@@ -1,36 +1,15 @@
-# CrateHub 1.1 — aplikacja desktopowa
+# CrateHub
 
-**[Pobierz aplikację na macOS Apple Silicon](https://github.com/boomerro88-sketch/CrateHub/releases/tag/v1.1.0)** — instalator DMG, komplet źródeł i sumy kontrolne.
+CrateHub to katalog do wyszukiwania sampli z trybami Poszukiwacz, Rytmiczna ruletka i Twoje skrzynki. Aplikacja działa we własnym oknie na macOS i Windows.
 
-CrateHub otwiera katalog i gramofon we własnym oknie aplikacji. Nie uruchamia przeglądarki ani terminala. Linki do zewnętrznych stron (np. „Otwórz YouTube”) mogą otwierać domyślną przeglądarkę.
+Instalatory oraz sumy kontrolne znajdują się w [wydaniach GitHub](https://github.com/boomerro88-sketch/CrateHub/releases). Instrukcję wyboru wersji, instalacji oraz przenoszenia danych opisuje [INSTALACJA-PL.md](INSTALACJA-PL.md).
 
-## Instalacja na Macu z Apple Silicon (M1/M2/M3/M4/M5)
-
-1. Otwórz `CrateHub-1.1.0-macOS-Apple-Silicon.dmg`.
-2. Przeciągnij CrateHub do folderu Applications / Aplikacje.
-3. Uruchom CrateHub z Aplikacji lub Launchpada.
-4. Zamknięcie okna kończy program i jego lokalny serwis.
-
-Nie instalujesz osobno Pythona, Node ani FFmpeg. W pakiecie są wymagane narzędzia. Program korzysta z systemowego WKWebView. Połączenie z internetem jest potrzebne do YouTube, importu playlist i pobierania audio.
-
-Pakiet jest podpisany lokalnie (ad hoc), bez notaryzacji Apple i certyfikatu Developer ID. macOS może wymagać zatwierdzenia aplikacji w ustawieniach Prywatność i ochrona. Nie wyłączaj zabezpieczeń całego systemu. To wydanie jest dla procesorów Apple Silicon; nie dla Maców Intel.
-
-## Przeniesienie dotychczasowych skrzynek
-
-Aplikacja ma własny profil danych. W dotychczasowej stronie wybierz **Rozpakuj skrzynkę** (eksport JSON). W programie wybierz **Zapakuj skrzynkę** i wskaż zapisany JSON. Nazwy, utwory i tagi zostaną scalone. Zapis w programie pozostaje po ponownym uruchomieniu.
-
-Dane: `~/Library/Application Support/CrateHub`. Usunięcie samej aplikacji nie usuwa tych danych. Analiza BPM i tonacji jest szacunkiem automatycznym, odrębnym od danych źródłowych. Dostępność osadzania i audio zależy od YouTube.
-
-## Windows 10/11 x64
-
-Instalator 1.1.1 otwiera CrateHub we własnym oknie. Zawiera Python, Node i FFmpeg; w razie potrzeby instaluje Microsoft WebView2. Język instalatora: PL/EN. Instalacja brakującego WebView2 wymaga internetu. Paczki Windows są budowane i sprawdzane przez GitHub Actions na Windows.
-
-Starszy instalator 1.0.1 otwierał przeglądarkę; nie należy go używać jako wersji aplikacji desktopowej.
+Źródła w katalogu `app/` zawierają katalog nagrań oraz odtwarzacz. Python, Node i FFmpeg są pakowane wraz z programem. Internet jest potrzebny do YouTube i pozostałych usług zewnętrznych; dostępność konkretnych filmów zależy od źródła.
 
 ## Budowanie
 
-Na docelowym systemie zainstaluj Python 3.12, FFmpeg i Node 22+, następnie `pip install -r requirements-build.txt` i `python packaging/build.py`. Windows wymaga WebView2 Runtime. Na Macu pakiet dołącza Python i zależności, a WKWebView dostarcza system.
+W systemie docelowym: Python 3.12, Node 22 i FFmpeg, następnie `pip install -r requirements-build.txt` oraz `python packaging/build.py`. Receptury wersji macOS arm64, macOS x86_64 i Windows x64 znajdują się w `.github/workflows/build-cross-platform.yml`. Windows wymaga WebView2 Runtime.
 
-Diagnostyka: `CrateHub --self-test`; serwis bez interfejsu: `CrateHub --headless`. `CRATE_DESKTOP_DATA` pozwala wskazać osobny katalog danych do testów. Stały lokalny port: 8890, dostęp wyłącznie z tego komputera.
+Test zależności i katalogu: `CrateHub --self-test`. Dane użytkownika: `~/Library/Application Support/CrateHub` na macOS, `%LOCALAPPDATA%\\CrateHub` na Windows. Port lokalny to 8890.
 
-Informacje o zależnościach: THIRD_PARTY.md i dołączone licencje. Źródła znajdują się w osobnej paczce obok instalatora.
+Wydania nie są podpisane certyfikatem Apple Developer ID ani certyfikatem Authenticode. Szczegóły komponentów i licencji: `THIRD_PARTY.md` oraz katalog `licenses/`.

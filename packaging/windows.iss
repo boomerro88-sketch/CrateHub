@@ -1,5 +1,5 @@
 #define AppName "CrateHub"
-#define AppVersion "1.1.1"
+#define AppVersion "1.2.0"
 [Setup]
 AppId={{68B21850-074C-40F0-9C6A-516DF7460698}
 AppName={#AppName}
@@ -8,7 +8,7 @@ DefaultDirName={localappdata}\Programs\CrateHub
 DefaultGroupName=CrateHub
 PrivilegesRequired=lowest
 OutputDir=..\release
-OutputBaseFilename=CrateHub-1.1.1-Windows-x64-Setup
+OutputBaseFilename=CrateHub-1.2.0-Windows-x64-Setup
 SetupIconFile=..\branding\cratehub.ico
 Compression=lzma2
 SolidCompression=yes

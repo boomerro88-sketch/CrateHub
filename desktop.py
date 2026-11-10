@@ -9,7 +9,7 @@ if len(sys.argv)>1 and sys.argv[1]=='--yt-dlp':
  if sys.stderr is None:sys.stderr=open(os.devnull,'w',encoding='utf-8')
  import yt_dlp
  yt_dlp.main(sys.argv[2:]);sys.exit(0)
-VERSION='1.1.1'
+VERSION='1.2.0'
 os.environ.setdefault('SSL_CERT_FILE',__import__('certifi').where())
 def data_root():
  if os.environ.get('CRATE_DESKTOP_DATA'):return Path(os.environ['CRATE_DESKTOP_DATA'])
@@ -26,6 +26,20 @@ def prepare():
    # User-imported catalogue is persistent, also across application upgrades.
    if relative.as_posix() in ['catalog-data.json','vinyl-player/tracks.json'] and dest.exists():continue
    dest.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source,dest)
+  # Merge the bundled update with the user's catalogue; never discard imports.
+  import gzip
+  source_json=seed/'catalog-data.json.gz'
+  bundled=json.loads(gzip.decompress(source_json.read_bytes()).decode('utf-8')) if source_json.exists() else json.loads((seed/'catalog-data.json').read_text(encoding='utf-8'))
+  target=root/'catalog-data.json'
+  if target.exists():
+   current=json.loads(target.read_text(encoding='utf-8'))
+   if not isinstance(current,list):raise ValueError('Nieprawidłowy katalog użytkownika; zachowano oryginał.')
+   existing={row.get('id') for row in current if isinstance(row,dict)}
+   current.extend(row for row in bundled if row.get('id') not in existing)
+  else:current=bundled
+  temp=target.with_suffix('.json.tmp');temp.write_text(json.dumps(current,ensure_ascii=False,separators=(',',':')),encoding='utf-8');os.replace(temp,target)
+  tracks=root/'vinyl-player/tracks.json';temp=tracks.with_suffix('.json.tmp')
+  temp.write_text(json.dumps([{k:r[k] for k in ['id','artist','title']} for r in current if all(k in r for k in ['id','artist','title'])],ensure_ascii=False,separators=(',',':')),encoding='utf-8');os.replace(temp,tracks)
   marker.write_text(VERSION, encoding='utf-8')
  if not (root/'catalog-data.json').exists():
   import gzip
