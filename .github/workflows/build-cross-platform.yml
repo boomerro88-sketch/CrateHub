@@ -33,9 +33,9 @@ jobs:
       - name: Test bundled tools and catalogue
         run: |
           export CRATE_DESKTOP_DATA="$RUNNER_TEMP/cratehub-selftest"
-          dist/CrateHub.app/Contents/MacOS/CrateHub --self-test
-          cat "$CRATE_DESKTOP_DATA/desktop.log"
-          grep '"ok": true' "$CRATE_DESKTOP_DATA/desktop.log"
+          set -o pipefail
+          dist/CrateHub.app/Contents/MacOS/CrateHub --self-test | tee "$RUNNER_TEMP/cratehub-result.json"
+          grep '"ok": true' "$RUNNER_TEMP/cratehub-result.json"
           codesign --verify --deep --strict dist/CrateHub.app
           file dist/CrateHub.app/Contents/MacOS/CrateHub
       - name: Create DMG
