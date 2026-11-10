@@ -1,0 +1,96 @@
+name: Publish verified installers
+on:
+  workflow_dispatch:
+    inputs:
+      build_run_id:
+        description: Successful build run ID
+        required: true
+        type: string
+      build_sha:
+        description: Exact commit that was built
+        required: true
+        type: string
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check build status and commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUILD_RUN: ${{ inputs.build_run_id }}
+          BUILD_SHA: ${{ inputs.build_sha }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN" > /tmp/build.json
+          jq -e --arg sha "$BUILD_SHA" '.status == "completed" and .conclusion == "success" and .head_sha == $sha' /tmp/build.json > /dev/null
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.build_sha }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: CrateHub-macOS-Apple-Silicon
+          path: release
+          run-id: ${{ inputs.build_run_id }}
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: CrateHub-macOS-Intel
+          path: release
+          run-id: ${{ inputs.build_run_id }}
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: CrateHub-Windows-x64
+          path: release
+          run-id: ${{ inputs.build_run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify installer checksums and package source
+        run: |
+          set -euo pipefail
+          for kind in Apple-Silicon Intel; do
+            file="CrateHub-1.2.0-macOS-$kind.dmg"
+            sha256sum "release/$file" | cut -d' ' -f1 | grep -F -i -f - "release/CrateHub-1.2.0-macOS-$kind-SHA256.txt"
+          done
+          file=CrateHub-1.2.0-Windows-x64-Setup.exe
+          sha256sum "release/$file" | cut -d' ' -f1 | grep -F -i -f - release/CrateHub-1.2.0-Windows-x64-SHA256.txt
+          git archive --format=zip --prefix=CrateHub/ -o release/CrateHub-1.2.0-source.zip HEAD
+          cp INSTALACJA-PL.md release/INSTALACJA-PL.md
+          cd release
+          sha256sum CrateHub-1.2.0-macOS-Apple-Silicon.dmg CrateHub-1.2.0-macOS-Intel.dmg CrateHub-1.2.0-Windows-x64-Setup.exe CrateHub-1.2.0-source.zip INSTALACJA-PL.md > CrateHub-1.2.0-SHA256.txt
+      - name: Create draft and upload installers
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUILD_SHA: ${{ inputs.build_sha }}
+        run: |
+          set -euo pipefail
+          cat > /tmp/release-notes.txt <<'EOF'
+          Aktualne instalatory CrateHub z katalogiem 32 497 nagrań, markerami i paginacją. Program uruchamia się we własnym oknie.
+
+          Wybierz plik dla macOS Apple Silicon, macOS Intel albo Windows 10/11 x64. Szczegółowa polska instrukcja znajduje się w INSTALACJA-PL.md. Podczas aktualizacji istniejące importy pozostają zachowane, a brakujące nagrania z nowej bazy są dodawane.
+
+          Zweryfikowano budowę i dołączone narzędzia na macOS Intel, macOS Apple Silicon oraz Windows x64. Automatyczny test Windows sprawdza także uruchomienie okna i zasobów. Nie wykonano pełnego odsłuchu wszystkich nagrań. Pakiety nie mają certyfikatu Apple Developer ID, notaryzacji Apple ani podpisu Authenticode. Dostępność filmów zależy od YouTube i połączenia z internetem.
+          EOF
+          gh release create v1.2.0 --target "$BUILD_SHA" --title 'CrateHub 1.2.0 — macOS i Windows' --notes-file /tmp/release-notes.txt --draft --prerelease
+          gh release upload v1.2.0 release/CrateHub-1.2.0-macOS-Apple-Silicon.dmg release/CrateHub-1.2.0-macOS-Intel.dmg release/CrateHub-1.2.0-Windows-x64-Setup.exe release/CrateHub-1.2.0-source.zip release/CrateHub-1.2.0-SHA256.txt release/INSTALACJA-PL.md
+      - name: Verify uploaded assets and publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/v1.2.0" > /tmp/release.json
+          python - <<'PY'
+          import json,hashlib,pathlib
+          release=json.load(open('/tmp/release.json'));assets={a['name']:a for a in release['assets']}
+          names=['CrateHub-1.2.0-macOS-Apple-Silicon.dmg','CrateHub-1.2.0-macOS-Intel.dmg','CrateHub-1.2.0-Windows-x64-Setup.exe','CrateHub-1.2.0-source.zip','CrateHub-1.2.0-SHA256.txt','INSTALACJA-PL.md']
+          for name in names:
+           p=pathlib.Path('release')/name;a=assets[name];assert a['state']=='uploaded' and a['size']==p.stat().st_size
+           h=hashlib.sha256()
+           with p.open('rb') as f:
+            for chunk in iter(lambda:f.read(1024*1024),b''):h.update(chunk)
+           assert a['digest']=='sha256:'+h.hexdigest(),name
+           print('Zweryfikowano:',name)
+          PY
+          gh release edit v1.2.0 --draft=false
